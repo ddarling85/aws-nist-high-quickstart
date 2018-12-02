@@ -423,7 +423,7 @@ Resources:
           - Value
   ApplicationTemplate:
     Type: AWS::CloudFormation::Stack
-    DependsOn: DSMTemplate
+    DependsOn: 
     Properties:
       TemplateURL:
         !Sub
