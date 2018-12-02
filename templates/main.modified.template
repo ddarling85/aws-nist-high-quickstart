@@ -400,7 +400,7 @@ Resources:
   ConfigRulesTemplate:
     Type: AWS::CloudFormation::Stack
     Condition: LoadConfigRulesTemplate
-	DependsOn:
+	DependsOn
     - IamTemplate
     - ProductionVpcTemplate
     - ManagementVpcTemplate
