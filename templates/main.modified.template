@@ -297,7 +297,7 @@ Resources:
         pBastionSSHCIDR: 0.0.0.0/0
         pDMZSubnetACIDR: 10.100.10.0/24
         pDMZSubnetBCIDR: 10.100.20.0/24
-        pManagementCIDR: 10.10.0.0/16
+        pManagementCIDR: 10.101.0.0/16
         pAppPrivateSubnetACIDR: 10.100.96.0/21
         pAppPrivateSubnetBCIDR: 10.100.119.0/21
         pDBPrivateSubnetACIDR: 10.100.194.0/21
@@ -354,11 +354,11 @@ Resources:
           - Outputs.rRouteTableProdPublic
         pProductionCIDR: 10.100.0.0/16
         pBastionSSHCIDR: 0.0.0.0/0
-        pManagementCIDR: 10.10.0.0/16
-        pManagementDMZSubnetACIDR: 10.10.1.0/24
-        pManagementDMZSubnetBCIDR: 10.10.2.0/24
-        pManagementPrivateSubnetACIDR: 10.10.20.0/24
-        pManagementPrivateSubnetBCIDR: 10.10.30.0/24
+        pManagementCIDR: 10.101.0.0/16
+        pManagementDMZSubnetACIDR: 10.101.1.0/24
+        pManagementDMZSubnetBCIDR: 10.101.2.0/24
+        pManagementPrivateSubnetACIDR: 10.101.20.0/24
+        pManagementPrivateSubnetBCIDR: 10.101.30.0/24
         pManagementVPCName: Management VPC
         pEC2KeyPairBastion: !Ref pEC2KeyPairBastion
         pEC2KeyPair: !Ref pEC2KeyPair
@@ -421,104 +421,4 @@ Resources:
           - CustomVariables
           - vResourceEnvironmentTagKey
           - Value
-  ApplicationTemplate:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL:
-        !Sub
-        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/application.modified.template
-        - QSS3Region:
-            !If
-            - GovCloudCondition
-            - s3-us-gov-west-1
-            - s3
-      TimeoutInMinutes: 30
-      Parameters:
-        pSecurityAlarmTopic:
-          !GetAtt
-          - LoggingTemplate
-          - Outputs.rSecurityAlarmTopic
-        pEC2KeyPair: !Ref pEC2KeyPair
-        pProductionCIDR: 10.100.0.0/16
-        pProductionVPC:
-          !GetAtt
-          - ProductionVpcTemplate
-          - Outputs.rVPCProduction
-        pDMZSubnetA:
-          !GetAtt
-          - ProductionVpcTemplate
-          - Outputs.rDMZSubnetA
-        pDMZSubnetB:
-          !GetAtt
-          - ProductionVpcTemplate
-          - Outputs.rDMZSubnetB
-        pAppPrivateSubnetA:
-          !GetAtt
-          - ProductionVpcTemplate
-          - Outputs.rAppPrivateSubnetA
-        pAppPrivateSubnetB:
-          !GetAtt
-          - ProductionVpcTemplate
-          - Outputs.rAppPrivateSubnetB
-        pWebInstanceType:
-          !FindInMap
-          - AWSAMIRegionMap
-          - !Ref AWS::Region
-          - InstanceType
-        pAppInstanceType:
-          !FindInMap
-          - AWSAMIRegionMap
-          - !Ref AWS::Region
-          - InstanceType
-        pManagementCIDR: 10.10.0.0/16
-        pRegionAZ1Name: !Ref pAvailabilityZoneA
-        pRegionAZ2Name: !Ref pAvailabilityZoneB
-        pWebServerAMI:
-          !FindInMap
-          - AWSAMIRegionMap
-          - !Ref AWS::Region
-          - AMZNLINUXHVM
-        pAppAmi:
-          !FindInMap
-          - AWSAMIRegionMap
-          - !Ref AWS::Region
-          - AMZNLINUXHVM
-        pEnvironment:
-          !FindInMap
-          - CustomVariables
-          - vResourceEnvironmentTagValue
-          - Value
-        pBastionSSHCIDR: 0.0.0.0/0
-        pSupportsGlacier:
-          !FindInMap
-          - RegionServiceSupport
-          - !Ref AWS::Region
-          - Glacier
-        QSS3BucketName: !Ref QSS3BucketName
-        QSS3KeyPrefix: !Ref QSS3KeyPrefix
-Outputs:
-  TemplateType:
-    Value: Standard Multi-Tier Web Application
-  TemplateVersion:
-    Value: 2.0
-  BastionIP:
-    Description: Use this IP via SSH to connect to Bastion Instance
-    Value:
-      !GetAtt
-      - ManagementVpcTemplate
-      - Outputs.rBastionInstanceIP
-  LandingPageURL:
-    Value:
-      !GetAtt
-      - ApplicationTemplate
-      - Outputs.LandingPageURL
-  WebsiteURL:
-    Value:
-      !GetAtt
-      - ApplicationTemplate
-      - Outputs.WebsiteURL
-  Help:
-    Description: For assistance or questions regarding this quickstart please email
-      compliance-accelerator@amazon.com
-    Value: ''
 ...
