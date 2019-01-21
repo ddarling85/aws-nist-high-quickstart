@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
     "",
+    "\\submodules",
+    "\\submodules\\quickstart-compliance-common",
+    "\\submodules\\quickstart-compliance-common\\templates",
     "\\templates"
   ],
+  "SelectedNode": "\\submodules\\quickstart-compliance-common\\templates\\config-rules.template",
   "PreviewInSolutionExplorer": false
 }
